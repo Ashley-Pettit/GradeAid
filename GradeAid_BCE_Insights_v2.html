@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grade Aid</title>
+
+  <!-- BCE-style font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* BCE-inspired core palette */
+      --bce-navy: #004b87;
+      --bce-navy-dark: #003766;
+      --bce-sky: #4ba3d3;
+      --bce-red: #e1261c;
+      --bce-gold: #f2a900;
+      --bce-green: #7ab800;
+
+      --bg: #e9f2fa;
+      --panel: #ffffff;
+      --card: #ffffff;
+      --border: #d4dbe6;
+      --text: #1f2933;
+      --muted: #5b6472;
+      --accent: var(--bce-navy);
+      --accent-2: var(--bce-sky);
+      --warn: #b45309;
+      --error: #b91c1c;
+      --ok: #15803d;
+      --link: #00558c;
+      --btn: var(--bce-navy);
+      --btn-text: #ffffff;
+      --chip: var(--bce-sky);
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+    }
+
+    [data-theme="dark"] {
+      /* Dark mode still BCE-tinted */
+      --bg: #071624;
+      --panel: #0c1a2b;
+      --card: #102038;
+      --border: #1f3349;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: var(--bce-sky);
+      --accent-2: var(--bce-gold);
+      --link: #7fb8ff;
+      --btn: var(--bce-sky);
+      --btn-text: #0b1120;
+      --chip: #0ea5e9;
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.6);
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      margin: 0;
+      font-family: "Nunito Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at top left, rgba(75,163,211,0.16), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(242,169,0,0.14), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+      background: linear-gradient(90deg, var(--bce-navy-dark), var(--bce-navy));
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #fff;
+    }
+
+    .brand .logo {
+      height: 52px;
+      width: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.35));
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .brand-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-title .sub {
+      color: rgba(226,232,240,0.9);
+      font-size: 13px;
+    }
+
+    .brand-meta {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(226,232,240,0.65);
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #e5e7eb;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* Disclaimer banner */
+    .disclaimer-banner {
+      background: linear-gradient(90deg, rgba(225,38,28,0.96), rgba(242,169,0,0.96));
+      color: #ffffff;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+    }
+
+    .disclaimer-inner {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding-block: 8px;
+    }
+
+    .disclaimer-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+    }
+
+    .disclaimer-text {
+      font-weight: 500;
+    }
+
+    @media (max-width: 720px) {
+      .disclaimer-inner { flex-direction: column; }
+    }
+
+    main .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 960px) {
+      main .grid { grid-template-columns: 1fr; }
+      .brand { align-items: flex-start; }
+      .brand-meta { margin-left: 0; margin-top: 8px; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(6px);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin: 0 0 6px 0;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .card p.desc {
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    @media (max-width: 720px) {
+      .row, .row3 { grid-template-columns: 1fr; }
+    }
+
+    .field { margin-bottom: 12px; }
+    .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+
+    input[type="text"], select, textarea, input[type="file"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
+      color: inherit;
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    [data-theme="dark"] input[type="text"],
+    [data-theme="dark"] select,
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] input[type="file"] {
+      background: rgba(15,23,42,0.9);
+    }
+
+    input[type="text"]:focus, select:focus, textarea:focus, input[type="file"]:focus {
+      outline: none;
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 2px rgba(75,163,211,0.25);
+      background: #ffffff;
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      color: var(--text);
+      background: rgba(75,163,211,0.08);
+      border: 1px solid rgba(75,163,211,0.35);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .chip b { color: var(--chip); }
+
+    .hint { font-size: 12px; color: var(--muted); }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    button, .ghost {
+      appearance: none;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 9px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    button:active, .ghost:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--btn), var(--accent-2));
+      color: var(--btn-text);
+      box-shadow: 0 4px 14px rgba(0,75,135,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .primary:not(:disabled):hover {
+      box-shadow: 0 6px 18px rgba(0,75,135,0.45);
+    }
+
+    .secondary {
+      background: #ffffff;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+    }
+
+    [data-theme="dark"] .secondary {
+      background: #0f172a;
+    }
+
+    .secondary:hover {
+      border-color: var(--accent-2);
+    }
+
+    .ghost {
+      background: transparent;
+      color: #e5e7eb;
+      border-radius: var(--radius-pill);
+      padding-inline: 14px;
+      border: 1px solid rgba(226,232,240,0.28);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .ghost:hover {
+      background: rgba(15,23,42,0.18);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: var(--radius-pill);
+    }
+
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+    .dot.err { background: var(--error); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    thead th {
+      text-align: left;
+      background: linear-gradient(90deg, rgba(0,75,135,0.06), rgba(75,163,211,0.09));
+      padding: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    tbody td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .grade-A { background: #dcfce7; color: #166534; }
+    .grade-B { background: #dbeafe; color: #1e40af; }
+    .grade-C { background: #fef3c7; color: #92400e; }
+    .grade-D { background: #fee2e2; color: #991b1b; }
+
+    .sent-pos { color: var(--ok); font-weight: 600; }
+    .sent-neu { color: var(--warn); font-weight: 600; }
+    .sent-neg { color: var(--error); font-weight: 600; }
+
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 24px 12px 28px;
+    }
+
+    .stack { display: grid; gap: 12px; }
+
+    .divider {
+      border-top: 1px dashed var(--border);
+      margin: 12px 0;
+    }
+
+    /* Small heading tweak for insights subcards */
+    #insights .card h3 {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap brand">
+      <!-- Replace src with your hosted BCE logo file -->
+      <img src="bce-logo.png" alt="Brisbane Catholic Education" class="logo" />
+
+      <div class="brand-title">
+        <h1>Grade Aid</h1>
+        <div class="sub">Aiding teachers with grading and insights into student performance.</div>
+      </div>
+
+      <div class="brand-meta">
+        <span class="pill">BCE · MVP Demo</span>
+        <!-- Toggle theme removed -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Disclaimer banner -->
+  <div class="disclaimer-banner" role="note" aria-label="AI grading disclaimer">
+    <div class="wrap disclaimer-inner">
+      <span class="disclaimer-title">Important</span>
+      <span class="disclaimer-text">
+        This tool does not replace the professional judgement of a teacher and should only be used as an aid to support assessment.
+      </span>
+    </div>
+  </div>
+
+  <main class="wrap" role="main">
+    <div class="grid">
+      <!-- Left column: Inputs -->
+      <section class="card" aria-labelledby="upload-title">
+        <h2 id="upload-title">Upload Assessments</h2>
+        <p class="desc">Add student submissions. Include the students name in the file</p>
+
+        <div class="stack">
+          <div class="field">
+            <div class="label">Student submissions (PDF, DOCX, TXT)</div>
+            <input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.txt" aria-describedby="fileHint"/>
+            <div id="fileHint" class="hint">You can drag and drop multiple files. Filenames should include the student name.</div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <div class="label">Year level</div>
+              <select id="yearLevel">
+                <option value="">Select</option>
+                <option value="Year 7">Year 7</option>
+                <option value="Year 8">Year 8</option>
+                <option value="Year 9">Year 9</option>
+                <option value="Year 10">Year 10</option>
+                <option value="Year 11">Year 11</option>
+                <option value="Year 12">Year 12</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="label">Subject</div>
+              <select id="subject">
+                <option value="">Select</option>
+                <option>English</option>
+                <option>Mathematics</option>
+                <option>Science</option>
+                <option>History</option>
+                <option>Geography</option>
+                <option>Health & PE</option>
+                <option>Digital Technologies</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label">Curriculum standards (optional)</div>
+            <textarea id="curriculumText" placeholder="Paste or reference specific year-level curriculum outcomes or descriptors relevant to this assessment."></textarea>
+            <div class="hint">The grading rubric will align against these outcomes.</div>
+          </div>
+
+          <div class="field">
+            <div class="label">Additional Custom assessment criteria (Optional)</div>
+            <textarea id="customCriteria" placeholder="e.g., Thesis clarity, Evidence quality, Structure & coherence, Referencing, Originality"></textarea>
+            <div class="hint">Teachers can provide free-text criteria to guide automated feedback.</div>
+          </div>
+
+          <!-- Row3: Grade scale -->
+          <div class="row3">
+            <div class="field">
+              <div class="label">Grade scale</div>
+              <select id="gradeScale">
+                <option value="A-D">A–D</option>
+                <option value="HD-PF">HD–PF</option>
+                <option value="0-100">0–100</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="processBtn">Process submissions</button>
+            <button class="secondary" id="clearBtn">Clear</button>
+            <div class="status" id="status">
+              <span class="dot warn"></span><span>Awaiting files</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: Summary / Export -->
+      <section class="card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Export & summary</h2>
+        <p class="desc">Review generated results and export to Excel-compatible CSV.</p>
+
+        <div class="stack">
+          <div class="field">
+            <div class="chip"><b>Columns:</b> Student Name • Potential Grade • Feedback • Areas for Improvement • Sentiment Score</div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="exportBtn" disabled>Export to Excel (CSV)</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="field">
+            <div class="label">Preview</div>
+            <div style="max-height: 360px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; background:#ffffff;">
+              <table id="resultsTable" aria-label="Results">
+                <thead>
+                  <tr>
+                    <th>Student name</th>
+                    <th>Potential grade</th>
+                    <th>Feedback</th>
+                    <th>Areas for improvement</th>
+                    <th>Sentiment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="5" style="color:var(--muted);">No results yet. Process submissions to generate preview.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Insights section -->
+    <section class="card" style="margin-top:16px" aria-labelledby="insights-title">
+      <h2 id="insights-title">Student Insights</h2>
+      <p class="desc">What did most students do well, and where might they need further learning?</p>
+
+      <div id="insights" class="stack">
+        <div class="hint">Insights will appear here after processing.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © 2025 Grade Aid — Demo UI. Data is processed locally for this mockup.
+  </footer>
+
+  <script>
+    const state = {
+      files: [],
+      results: []
+    };
+
+    const el = (id) => document.getElementById(id);
+    const fileInput = el('fileInput');
+    const processBtn = el('processBtn');
+    const clearBtn = el('clearBtn');
+    const exportBtn = el('exportBtn');
+    const statusEl = el('status');
+    const table = el('resultsTable').querySelector('tbody');
+    const insightsEl = el('insights');
+
+    // File handling
+    fileInput.addEventListener('change', (e) => {
+      state.files = Array.from(e.target.files || []);
+      renderStatus();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      state.files = [];
+      state.results = [];
+      fileInput.value = '';
+      renderStatus();
+      renderTable();
+      renderInsights();
+      exportBtn.disabled = true;
+    });
+
+    // Processing simulation: derive names from filenames, generate stubbed grades/feedback
+    processBtn.addEventListener('click', () => {
+      if (!state.files.length) {
+        pulseStatus('err', 'No files selected');
+        return;
+      }
+      pulseStatus('warn', 'Processing…');
+      const year = el('yearLevel').value || 'Year Level N/A';
+      const subject = el('subject').value || 'Subject N/A';
+      const criteria = el('customCriteria').value.trim();
+      const scale = el('gradeScale').value;
+
+      // Fixed defaults for mock sentiment / highlight
+      const focus = 'overall';
+      const highlight = 'curriculum';
+
+      // Mock processing: map files to results
+      state.results = state.files.map((f, idx) => {
+        const base = f.name.replace(/\.[^/.]+$/, '');
+        const studentName = base
+          .replace(/[_-]/g, ' ')
+          .replace(/(submission|final|draft)/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim() || `Student ${idx+1}`;
+
+        const grade = mockGrade(scale, idx);
+        const sentiment = mockSentiment(focus, idx);
+        const feedback = mockFeedback(subject, year, criteria);
+        const improvement = mockImprovement(highlight, criteria);
+
+        return { studentName, grade, feedback, improvement, sentiment };
+      });
+
+      renderTable();
+      renderInsights();
+      exportBtn.disabled = !state.results.length;
+      pulseStatus('ok', `Processed ${state.results.length} ${state.results.length === 1 ? 'file' : 'files'}`);
+    });
+
+    exportBtn.addEventListener('click', () => {
+      if (!state.results.length) return;
+      const csv = toCSV(state.results);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'grading_assessment_export.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+
+    function renderStatus() {
+      const dot = statusEl.querySelector('.dot');
+      const text = statusEl.querySelector('span:last-child');
+      if (!state.files.length) {
+        dot.className = 'dot warn';
+        text.textContent = 'Awaiting files';
+      } else {
+        dot.className = 'dot ok';
+        text.textContent = `${state.files.length} file(s) selected`;
+      }
+    }
+
+    function pulseStatus(kind, msg) {
+      const dot = statusEl.querySelector('.dot');
+      const text = statusEl.querySelector('span:last-child');
+      dot.className = `dot ${kind}`;
+      text.textContent = msg;
+      setTimeout(renderStatus, 1500);
+    }
+
+    function renderTable() {
+      table.innerHTML = '';
+      if (!state.results.length) {
+        table.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No results yet. Process submissions to generate preview.</td></tr>';
+        return;
+      }
+      state.results.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(r.studentName)}</td>
+          <td>${renderGradeBadge(r.grade)}</td>
+          <td>${escapeHtml(r.feedback)}</td>
+          <td>${escapeHtml(r.improvement)}</td>
+          <td>${renderSentiment(r.sentiment)}</td>
+        `;
+        table.appendChild(tr);
+      });
+    }
+
+    function renderInsights() {
+      insightsEl.innerHTML = '';
+      if (!state.results.length) {
+        insightsEl.innerHTML = '<div class="hint">Insights will appear here after processing.</div>';
+        return;
+      }
+
+      const summary = aggregateInsights(state.results);
+
+      const blocks = [
+        {
+          title: 'What did most students do well?',
+          items: summary.strengths.slice(0, 5)
+        },
+        {
+          title: 'What do students need further learning on?',
+          items: summary.needs.slice(0, 5)
+        }
+      ];
+
+      blocks.forEach(block => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3 style="margin:0 0 6px 0; font-size:16px;">${block.title}</h3>
+          <ul style="margin:0; padding-left:18px; color: var(--muted);">
+            ${block.items.length
+              ? block.items.map(i => `<li>${escapeHtml(i)}</li>`).join('')
+              : '<li>No significant signals detected</li>'}
+          </ul>
+        `;
+        insightsEl.appendChild(card);
+      });
+    }
+
+    function toCSV(rows) {
+      const headers = ['Student Name','Potential Grade','Feedback','Areas for Improvement','Sentiment Score'];
+      const lines = [headers.join(',')];
+      rows.forEach(r => {
+        lines.push([
+          csvSafe(r.studentName),
+          csvSafe(r.grade.label || r.grade),
+          csvSafe(r.feedback),
+          csvSafe(r.improvement),
+          csvSafe(r.sentiment.score.toFixed(2))
+        ].join(','));
+      });
+      return lines.join('\n');
+    }
+
+    // Mock helpers
+    function mockGrade(scale, i) {
+      const scales = {
+        'A-D': ['A','B','C','D'],
+        'HD-PF': ['HD','DI','CR','PA','PF'],
+        '0-100': [92, 84, 77, 68, 59, 51, 43, 35]
+      };
+      const pool = scales[scale] || scales['A-D'];
+      const val = pool[i % pool.length];
+      const label = typeof val === 'number' ? `${val}` : val;
+      const className =
+        label.startsWith('A') || label.startsWith('HD') || +label >= 85 ? 'grade-A' :
+        label.startsWith('B') || label.startsWith('DI') || (+label >= 70 && +label < 85) ? 'grade-B' :
+        label.startsWith('C') || label.startsWith('CR') || (+label >= 60 && +label < 70) ? 'grade-C' :
+        'grade-D';
+      return { label, className };
+    }
+
+    function mockSentiment(focus, i) {
+      const score = Math.max(0, Math.min(1, (Math.sin(i + 1) + 1) / 2));
+      const kind = score > 0.66 ? 'positive' : score > 0.33 ? 'neutral' : 'negative';
+      const noteByFocus = {
+        overall: 'Overall tone',
+        confidence: 'Confidence indicators',
+        confusion: 'Potential confusion',
+        engagement: 'Engagement cues'
+      }[focus] || 'Overall tone';
+      return { score, kind, note: noteByFocus };
+    }
+
+    function mockFeedback(subject, year, criteria) {
+      const base = `Aligned to ${subject}, ${year}. `;
+      const crit = criteria ? `Criteria: ${criteria.split(',').slice(0,3).map(s=>s.trim()).join(' • ')}. ` : '';
+      return base + crit + 'Strength in structure and clarity. Evidence generally appropriate.';
+    }
+
+    function mockImprovement(highlight, criteria) {
+      const list = [
+        'Deepen analysis with specific examples',
+        'Tighten thesis and topic sentences',
+        'Improve referencing and citation consistency',
+        'Address counterarguments explicitly',
+        'Strengthen conclusion by synthesising insights'
+      ];
+      const base = list.slice(0, 2 + Math.floor(Math.random()*3)).join('; ') + '.';
+      if (highlight === 'criteria' && criteria) {
+        const first = criteria.split(',').map(s=>s.trim()).filter(Boolean)[0];
+        return first ? `${base} Focus on: ${first}.` : base;
+      }
+      return base;
+    }
+
+    function aggregateInsights(results) {
+      const strengthsCounts = {};
+      const needsCounts = {};
+
+      // Strengths from feedback sentences
+      const feedbackText = results.map(r => r.feedback).join(' ');
+      feedbackText
+        .split(/[.!?;]/)
+        .map(s => s.trim())
+        .filter(s => s.length > 3)
+        .forEach(sentence => {
+          const key = sentence;
+          strengthsCounts[key] = (strengthsCounts[key] || 0) + 1;
+        });
+
+      // Needs from improvement phrases (full clauses)
+      const improvementsText = results.map(r => r.improvement).join(' ');
+      improvementsText
+        .split(/[.!?;]/)
+        .map(s => s.trim())
+        .filter(s => s.length > 3)
+        .forEach(sentence => {
+          const key = sentence;
+          needsCounts[key] = (needsCounts[key] || 0) + 1;
+        });
+
+      const strengths = Object.entries(strengthsCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([text]) => text);
+
+      const needs = Object.entries(needsCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([text]) => text);
+
+      return { strengths, needs };
+    }
+
+    function renderGradeBadge(grade) {
+      return `<span class="badge ${grade.className}">${grade.label}</span>`;
+    }
+
+    function renderSentiment(s) {
+      const cls = s.kind === 'positive' ? 'sent-pos' : s.kind === 'neutral' ? 'sent-neu' : 'sent-neg';
+      return `<span class="${cls}">${s.kind} (${s.score.toFixed(2)})</span><br/><span class="hint">${s.note}</span>`;
+    }
+
+    // Utils
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    }
+    function csvSafe(str) {
+      const s = String(str ?? '');
+      if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+      return s;
+    }
+
+    // Initial render
+    renderStatus();
+  </script>
+</body>
+</html>
