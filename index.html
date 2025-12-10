@@ -12,7 +12,6 @@
 
   <style>
     :root {
-      /* BCE-inspired core palette */
       --bce-navy: #004b87;
       --bce-navy-dark: #003766;
       --bce-sky: #4ba3d3;
@@ -41,7 +40,6 @@
     }
 
     [data-theme="dark"] {
-      /* Dark mode still BCE-tinted */
       --bg: #071624;
       --panel: #0c1a2b;
       --card: #102038;
@@ -74,7 +72,7 @@
       background: linear-gradient(90deg, var(--bce-navy-dark), var(--bce-navy));
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
     }
 
@@ -135,6 +133,26 @@
       font-weight: 600;
       letter-spacing: 0.03em;
       text-transform: uppercase;
+    }
+
+    /* JS error banner - visible by default, hidden once JS starts successfully */
+    .error-banner {
+      background: #b91c1c;
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+    .error-banner small {
+      font-weight: 500;
+      display: block;
+      margin-top: 4px;
+      opacity: 0.9;
     }
 
     /* Disclaimer banner */
@@ -318,20 +336,6 @@
       border-color: var(--accent-2);
     }
 
-    .ghost {
-      background: transparent;
-      color: #e5e7eb;
-      border-radius: var(--radius-pill);
-      padding-inline: 14px;
-      border: 1px solid rgba(226,232,240,0.28);
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .ghost:hover {
-      background: rgba(15,23,42,0.18);
-    }
-
     .status {
       display: flex;
       align-items: center;
@@ -407,7 +411,6 @@
       margin: 12px 0;
     }
 
-    /* Small heading tweak for insights subcards */
     #insights .card h3 {
       color: var(--accent);
     }
@@ -416,8 +419,7 @@
 <body>
   <header>
     <div class="wrap brand">
-      <!-- Replace src with your hosted BCE logo file -->
-      <img src="bce-logo.png" alt="Brisbane Catholic Education" class="logo" />
+      <img src="data:image/png;base64,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" alt="Brisbane Catholic Education" class="logo" />
 
       <div class="brand-title">
         <h1>Grade Aid</h1>
@@ -426,10 +428,15 @@
 
       <div class="brand-meta">
         <span class="pill">BCE · MVP Demo</span>
-        <!-- Toggle theme removed -->
       </div>
     </div>
   </header>
+
+  <!-- JS error banner - visible by default, hidden once JS initialises -->
+  <div id="jsErrorBanner" class="error-banner">
+    There was a problem loading the interactive features of Grade Aid.
+    <small>Please save this HTML file locally to your computer and open it from there (not in an online preview) so that the scripts can run.</small>
+  </div>
 
   <!-- Disclaimer banner -->
   <div class="disclaimer-banner" role="note" aria-label="AI grading disclaimer">
@@ -446,7 +453,7 @@
       <!-- Left column: Inputs -->
       <section class="card" aria-labelledby="upload-title">
         <h2 id="upload-title">Upload Assessments</h2>
-        <p class="desc">Add student submissions. Include the students name in the file</p>
+        <p class="desc">Add student submissions. Include the student's name in the file name.</p>
 
         <div class="stack">
           <div class="field">
@@ -484,18 +491,17 @@
           </div>
 
           <div class="field">
-            <div class="label">Curriculum standards (optional)</div>
+            <div the="label">Curriculum standards (optional)</div>
             <textarea id="curriculumText" placeholder="Paste or reference specific year-level curriculum outcomes or descriptors relevant to this assessment."></textarea>
             <div class="hint">The grading rubric will align against these outcomes.</div>
           </div>
 
           <div class="field">
-            <div class="label">Additional Custom assessment criteria (Optional)</div>
+            <div class="label">Additional custom assessment criteria (optional)</div>
             <textarea id="customCriteria" placeholder="e.g., Thesis clarity, Evidence quality, Structure & coherence, Referencing, Originality"></textarea>
             <div class="hint">Teachers can provide free-text criteria to guide automated feedback.</div>
           </div>
 
-          <!-- Row3: Grade scale -->
           <div class="row3">
             <div class="field">
               <div class="label">Grade scale</div>
@@ -572,6 +578,18 @@
   </footer>
 
   <script>
+    // JS initialisation: hide the default error banner now that script is running
+    (function() {
+      var banner = document.getElementById('jsErrorBanner');
+      if (banner) banner.style.display = 'none';
+    })();
+
+    // Global error handler: show error banner again if something goes wrong at runtime
+    window.addEventListener('error', function() {
+      var banner = document.getElementById('jsErrorBanner');
+      if (banner) banner.style.display = 'block';
+    });
+
     const state = {
       files: [],
       results: []
@@ -586,7 +604,6 @@
     const table = el('resultsTable').querySelector('tbody');
     const insightsEl = el('insights');
 
-    // File handling
     fileInput.addEventListener('change', (e) => {
       state.files = Array.from(e.target.files || []);
       renderStatus();
@@ -602,7 +619,6 @@
       exportBtn.disabled = true;
     });
 
-    // Processing simulation: derive names from filenames, generate stubbed grades/feedback
     processBtn.addEventListener('click', () => {
       if (!state.files.length) {
         pulseStatus('err', 'No files selected');
@@ -614,16 +630,14 @@
       const criteria = el('customCriteria').value.trim();
       const scale = el('gradeScale').value;
 
-      // Fixed defaults for mock sentiment / highlight
       const focus = 'overall';
       const highlight = 'curriculum';
 
-      // Mock processing: map files to results
       state.results = state.files.map((f, idx) => {
         const base = f.name.replace(/\.[^/.]+$/, '');
         const studentName = base
           .replace(/[_-]/g, ' ')
-          .replace(/(submission|final|draft)/gi, '')
+          .replace(/\b(submission|final|draft)\b/gi, '')
           .replace(/\s+/g, ' ')
           .trim() || `Student ${idx+1}`;
 
@@ -744,7 +758,6 @@
       return lines.join('\n');
     }
 
-    // Mock helpers
     function mockGrade(scale, i) {
       const scales = {
         'A-D': ['A','B','C','D'],
@@ -800,7 +813,6 @@
       const strengthsCounts = {};
       const needsCounts = {};
 
-      // Strengths from feedback sentences
       const feedbackText = results.map(r => r.feedback).join(' ');
       feedbackText
         .split(/[.!?;]/)
@@ -811,7 +823,6 @@
           strengthsCounts[key] = (strengthsCounts[key] || 0) + 1;
         });
 
-      // Needs from improvement phrases (full clauses)
       const improvementsText = results.map(r => r.improvement).join(' ');
       improvementsText
         .split(/[.!?;]/)
@@ -842,7 +853,6 @@
       return `<span class="${cls}">${s.kind} (${s.score.toFixed(2)})</span><br/><span class="hint">${s.note}</span>`;
     }
 
-    // Utils
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
     }
@@ -852,7 +862,6 @@
       return s;
     }
 
-    // Initial render
     renderStatus();
   </script>
 </body>
