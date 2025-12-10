@@ -491,13 +491,13 @@
           </div>
 
           <div class="field">
-            <div the="label">Curriculum standards (optional)</div>
+            <div class="label">Curriculum standards (optional)</div>
             <textarea id="curriculumText" placeholder="Paste or reference specific year-level curriculum outcomes or descriptors relevant to this assessment."></textarea>
             <div class="hint">The grading rubric will align against these outcomes.</div>
           </div>
 
           <div class="field">
-            <div class="label">Additional custom assessment criteria (optional)</div>
+            <div class="label">Are there any specific assessment criteria that should carry strong weighting (Optional)?</div>
             <textarea id="customCriteria" placeholder="e.g., Thesis clarity, Evidence quality, Structure & coherence, Referencing, Originality"></textarea>
             <div class="hint">Teachers can provide free-text criteria to guide automated feedback.</div>
           </div>
@@ -525,14 +525,10 @@
 
       <!-- Right column: Summary / Export -->
       <section class="card" aria-labelledby="summary-title">
-        <h2 id="summary-title">Export & summary</h2>
-        <p class="desc">Review generated results and export to Excel-compatible CSV.</p>
+        <h2 id="summary-title">Initial Assessment Summary</h2>
+        <p class="desc">Initial feedback for students assessments is shown here. Please remember this is AI generated and does not replace the professional judgement of a teacher.</p>
 
         <div class="stack">
-          <div class="field">
-            <div class="chip"><b>Columns:</b> Student Name • Potential Grade • Feedback • Areas for Improvement • Sentiment Score</div>
-          </div>
-
           <div class="actions">
             <button class="primary" id="exportBtn" disabled>Export to Excel (CSV)</button>
           </div>
@@ -549,7 +545,6 @@
                     <th>Potential grade</th>
                     <th>Feedback</th>
                     <th>Areas for improvement</th>
-                    <th>Sentiment</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -702,7 +697,6 @@
           <td>${renderGradeBadge(r.grade)}</td>
           <td>${escapeHtml(r.feedback)}</td>
           <td>${escapeHtml(r.improvement)}</td>
-          <td>${renderSentiment(r.sentiment)}</td>
         `;
         table.appendChild(tr);
       });
@@ -744,15 +738,14 @@
     }
 
     function toCSV(rows) {
-      const headers = ['Student Name','Potential Grade','Feedback','Areas for Improvement','Sentiment Score'];
+      const headers = ['Student Name','Potential Grade','Feedback','Areas for Improvement'];
       const lines = [headers.join(',')];
       rows.forEach(r => {
         lines.push([
           csvSafe(r.studentName),
           csvSafe(r.grade.label || r.grade),
           csvSafe(r.feedback),
-          csvSafe(r.improvement),
-          csvSafe(r.sentiment.score.toFixed(2))
+          csvSafe(r.improvement)
         ].join(','));
       });
       return lines.join('\n');
